@@ -1,0 +1,30 @@
+NOT OFFICIAL, just getting a layout that the great gpt showed me
+
+src/
+  components/
+    Navbar/
+      Navbar.tsx
+    Dashboard/
+      Dashboard.tsx
+    CurrentVehicles/
+      CurrentVehicles.tsx
+    RecentActivity/
+      RecentActivity.tsx
+    PlateLookup/
+      PlateLookup.tsx
+    Permits/
+      Permits.tsx
+    Shared/
+      Table.tsx
+      LoadingSpinner.tsx
+
+  pages/
+    Home.tsx
+
+  api/
+    vehicles.ts
+    permits.ts
+    activity.ts
+
+  App.tsx
+  index.html
