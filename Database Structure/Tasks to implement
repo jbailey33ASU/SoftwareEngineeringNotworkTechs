@@ -1,0 +1,44 @@
+Create Indexes in the database for license plates, entry times, and exit times for faster searches
+
+Adjust the current SQL query updates to utilize pooling so that the connection to the database does not have to strain itself opening and closing connections.
+
+
+Add the below functions the App_Logic.py file:
+
+Exception Management:
+Create a function to remove exceptions when they are no longer needed [remove_exception(license_plate)]
+-No output
+
+Create a function to add a timed exception for events like maintenance so that temporary exceptions do not need to be manually kept track of [apply_timed_exception(license_plate, exception, start, end)]
+-No output
+
+
+Admin Management Tools:
+Create a function to update discount profiles [update_discount_profiles(discount_id, new_percent)]
+-No output
+
+Create a function to remove license plates from discounted list [remove_discount_plate(license_plate)]
+-No output
+
+
+Search/Lookup Tools:
+Create a function that will fetch the plate history of the vehicle [get_plate_history(license_plate)]
+-This should provide information regarding entry and exit time and fee paid
+
+Create a function to search vehicle entry/exit by time range () [get_activity_between(start_time, end_time)]
+-This hsould provide what vehicles entered the garage between a certain time range (license plate, entry time, exit time)
+
+
+Additional Analytics & Reporting
+Create a function that tracks how many vehicles are currently in the garage [get_active_vehicles()]
+-This should provide the total number of vehicles that are in the garage (where exit_time is NULL)
+
+Create a function to get the total revenue for a specified time period [get_total_revenue(start_date, end_date)]
+-This function will add all fees over the specified time period
+
+Create a function to see the average parking duration [get_average_parking_time()]
+
+
+
+
+If time permits, auto completion of searches (license plate #'s) & live dashboard features can be implemented
