@@ -1,13 +1,11 @@
 import datetime
 import mysql.connector
-#from mysql.connector import pooling
+from mysql.connector import pooling
 
-#implement pooling into functions
-#Pooling helps keep connections to the database open so that
-#there is no need to open and close so many instances
+#defined functions use try and finally in case any code crashes during the try. Finally allows the .close() to run
+#and return the connections to the pool to prevent leaks and not run out of connections.
 
 #Create pool once the application starts
-"""
 db_pool = pooling.MySQLConnectionPool(
     pool_name = "garage_pool",
     pool_size = 10, #Keeps 10 connections open and ready
@@ -17,18 +15,11 @@ db_pool = pooling.MySQLConnectionPool(
     password = "password",
     database = "parking_database"
 )
-"""
-
 
 
 #Connect to MySQL Workbench
 def get_db_connection():
-    return mysql.connector.connect(
-        host = "localhost",
-        user = "genuser",
-        password = "password",
-        database = "parking_database"
-    )
+    return db_pool.get_connection()
 
 #Define Car class
 class Car:
@@ -36,10 +27,10 @@ class Car:
         self.license_plate = license_plate
         self.enter_time = datetime.datetime.now()
         self.exit_time = None
-        self.exception = None
-        self.exception_start = None
-        self.exception_end = None
-        self.exception_percent = 0
+        self.discountID = None
+        self.discount_start = None
+        self.discount_end = None
+        self.discount_percent = 0
 
 
 #Database Functions
@@ -47,44 +38,41 @@ def car_enters(car_obj):
     mydb = get_db_connection()
     mycursor = mydb.cursor()
 
-    sql_insert = """
-        INSERT INTO LicensePlateTracker
-        (licensePlate, exception, exceptionStart, exceptionEnd, enterTime)
-        VALUES (%s, %s, %s, %s, %s)
-    """
+    try:
+    #Arguments MUST match the order from the 'car_enters' procedure
+        proc_args = [
+            car_obj.license_plate,
+            car_obj.discountID,
+            car_obj.discount_start,
+            car_obj.discount_end,
+            car_obj.enter_time
+        ]
 
-    data = (
-        car_obj.license_plate,
-        car_obj.exception,
-        car_obj.exception_start,
-        car_obj.exception_end,
-        car_obj.enter_time
-    )
+        #call stored procedure car_enters(license plate, discountID, discountStart, discountEnd, enterTime)
+        mycursor.callproc('car_enters', proc_args)
 
-    mycursor.execute(sql_insert, data)
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    print(f"Recorded entry for vehicle with license plate: {car_obj.license_plate}")
+        mydb.commit()
+        print(f"Recorded entry for vehicle with license plate: {car_obj.license_plate}")
 
+    finally:
+        mycursor.close()
+        mydb.close() #returns the connection back to the pool
+    
 
 def car_exits(license_plate, final_fee = 0.00):
     mydb = get_db_connection()
     mycursor = mydb.cursor()
 
-    exit_time = datetime.datetime.now()
-    #update exitTime and calculatedFee
-    sql_update = """
-        UPDATE LicensePlateTracker
-        SET exitTime = %s, calculatedFee = %s
-        WHERE licensePlate = %s AND exitTime IS NULL
-    """
-    mycursor.execute(sql_update, (exit_time, final_fee, license_plate))
+    try:
+        #call stored procedure car_exits(license plate, fee)
+        mycursor.callproc('car_exits', [license_plate, final_fee])
 
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    print(f"Recorded exit for vehicle with license plate: {license_plate}")
+        mydb.commit()
+        print(f"Recorded exit for vehicle with license plate: {license_plate}")
+
+    finally:
+        mycursor.close()
+        mydb.close() #return connection to pool
 
 
 
@@ -94,26 +82,50 @@ if __name__ == "__main__":
 
 
     ### TESTING ###
-
-    #car arrives
-    temp_car = Car("ABC1234")
-    car_enters(temp_car)
-
-    #car leaves
-    car_exits("ABC1234")
-
-    #Fetch & print data
+    #1. Setup discount profile
+    #2. Test normal vehicle entry
+    #3. Test entry with no discount
+    #4. Test exit
+    #5. Print results
+    
+    #1.
     test_db = get_db_connection()
     test_cursor = test_db.cursor()
 
-    test_cursor.execute("SELECT * FROM LicensePlateTracker")
-    data = test_cursor.fetchall()
+    try:
+        test_cursor.callproc('create_discount_profile', ["Employee", 50])
+        test_db.commit()
+    except Exception as e:
+        print(f"NOTE: Profile might already exist: {e}")
 
-    print("--- DATABASE CONTENTS ---")
-    for row in data:
-        print(row)
+    finally:
+        test_cursor.close()
+        test_db.close()
 
-    #close connection to database
-    test_cursor.close()
-    test_db.close()
+    #2.
+    car1 = Car("ZYX9876")
+    car1.discountID = 1
+    car_enters(car1)
 
+    #3.
+    car2 = Car("SDF8732")
+    car_enters(car2)
+
+    #4
+    print("\n--- PROCESSING EXITS ---")
+    car_exits("ZYX9876", 20.00)#should have discount ($10)
+    car_exits("SDF8732", 20.00)#should have NO discount ($20)
+
+    #5
+    print("\n\n--- FINAL DATABASE STATE ---")
+    verify_db = get_db_connection()
+    verify_cursor = verify_db.cursor()
+
+    verify_cursor.execute("SELECT LicensePlate, enterTime, exitTime, calculatedFee FROM LicensePlateTracker")
+    rows = verify_cursor.fetchall()
+
+    for row in rows:
+        print(f"Plate: {row[0]} | In: {row[1]} | Out: {row[2]} | Paid: {row[3]}")
+
+    verify_cursor.close()
+    verify_db.close()
