@@ -1,36 +1,30 @@
-Create Indexes in the database for license plates, entry times, and exit times for faster searches
+Add the below functions to the App_Logic.py file:
 
-Adjust the current SQL query updates to utilize pooling so that the connection to the database does not have to strain itself opening and closing connections.
-
-
-Add the below functions the App_Logic.py file:
-
-Exception Management:
-Create a function to remove exceptions when they are no longer needed [remove_exception(license_plate)]
+Discount Management:
+Create a function to remove discounts when they are no longer needed [remove_discount(license_plate)]
+(Removal of a discount can also be completed by passing 'None' to Python or 'NULL' to the database.)
 -No output
 
-Create a function to add a timed exception for events like maintenance so that temporary exceptions do not need to be manually kept track of [apply_timed_exception(license_plate, exception, start, end)]
+Create a function to add a timed discount for events like maintenance so that temporary discounts do not need to be manually kept track of [apply_temp_discount(license_plate, discountID, start, end)]
 -No output
 
 
 Admin Management Tools:
-Create a function to update discount profiles [update_discount_profiles(discount_id, new_percent)]
--No output
-
-Create a function to remove license plates from discounted list [remove_discount_plate(license_plate)]
+Create a function to update discount profiles [update_discount_profile(discount_id, new_percent)]
 -No output
 
 
 Search/Lookup Tools:
 Create a function that will fetch the plate history of the vehicle [get_plate_history(license_plate)]
--This should provide information regarding entry and exit time and fee paid
+-This should provide information regarding entry and exit time and the fee paid
 
 Create a function to search vehicle entry/exit by time range () [get_activity_between(start_time, end_time)]
--This hsould provide what vehicles entered the garage between a certain time range (license plate, entry time, exit time)
+-This should provide what vehicles entered the garage between a certain time range (license plate, entry time, exit time)
 
 
 Additional Analytics & Reporting
 Create a function that tracks how many vehicles are currently in the garage [get_active_vehicles()]
+(Create SQL view and implement into a Python function)
 -This should provide the total number of vehicles that are in the garage (where exit_time is NULL)
 
 Create a function to get the total revenue for a specified time period [get_total_revenue(start_date, end_date)]
