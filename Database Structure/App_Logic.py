@@ -1,59 +1,65 @@
 from Database_Utilities import get_db_connection
-#from mysql.connector import pooling
 
-#implement pooling into functions
-#Pooling helps keep connections to the database open so that
-#there is no need to open and close so many instances
-
-#Create pool once the application starts
-"""
-db_pool = pooling.MySQLConnectionPool(
-    pool_name = "garage_pool",
-    pool_size = 10, #Keeps 10 connections open and ready
-    pool_reset_session = True,
-    host = "localhost",
-    user = "genuser",
-    password = "password",
-    database = "parking_database"
-)
-"""
-
+#Pooling is imported from Database_Utilities.py file
 
 def create_discount_profile(profile_name, discount_percent):
     #Add category (ex, Employee, Patient, etc.) to DiscountProfiles table
     mydb = get_db_connection()
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO DiscountProfiles (profileName, discountPercent) VALUES (%s, %s)"
-    mycursor.execute(sql, (profile_name, discount_percent))
+    try:
+        #Call stored procedure create_discount_profile(name, percent)
+        mycursor.callproc('create_discount_profile', [profile_name, discount_percent])
 
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    print(f"Created discount profile: '{profile_name}' at {discount_percent}% off.")
+        mydb.commit()
+        print(f"Created discount profile: '{profile_name}' at {discount_percent}% off.")
+        
+    finally:
+        mycursor.close()
+        mydb.close()
+    
 
-def apply_exception(license_plate, exception_name):
+def apply_single_discount(license_plate, discount_id):
+    #USE FOR TEMPORARY DISCOUNTS
+    #ONLY APPLIES DISCOUNT FOR CURRENT VISIT
     mydb = get_db_connection()
     mycursor = mydb.cursor()
 
-    #Example logic to update active parking session with an exception
-    sql = "UPDATE LicensePlateTracker SET exception = %s WHERE licensePlate = %s AND exitTime IS NULL"
-    mycursor.execute(sql, (exception_name, license_plate))
+    try:
+        #Call stored procedure apply_discount(license plate, discountID) to update session
+        mycursor.callproc('apply_single_discount', [license_plate, discount_id])
 
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    print(f"Applied exception '{exception_name}' to plate {license_plate}")
+        #Fetch specific profile name to print
+        sql = "SELECT profileName FROM DiscountProfiles WHERE discountID = %s"
+        mycursor.execute(sql, (discount_id,))
+        result = mycursor.fetchone()
 
-def register_plate_for_discount(license_plate, discount_id):
+        mydb.commit()
+        if result:
+            print(f"Applied one time discount '{result[0]}' to plate {license_plate}.")
+        else:
+            print(f"Applied one time discount - discount ID {discount_ID} to plate {license_plate} : (Profile name not found).")
+
+    finally:
+        mycursor.close()
+        mydb.close()
+
+    
+
+def register_plate_discount(license_plate, discount_id):
     #Link specific plate to discount ID in LicensePlates table
+    #USE FOR PERMANENT DISCOUNTS
+    #APPLIES DISCOUNT FOR ALL VISITS
     mydb = get_db_connection()
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO LicensePlates (licensePlate, discountID) VALUES (%s, %s)"
-    mycursor.execute(sql, (license_plate, discount_id))
+    try:
+        #Call stored procedure register_plate_discount(license plate, discount ID)
+        mycursor.callproc('register_plate_discount', [license_plate, discount_id])
 
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    print(f"Registered license plate {license_plate} for discount ID {discount_id}.")
+        mydb.commit()
+        print(f"Registered license plate {license_plate} for discount ID {discount_id}.")
+
+    finally:
+        mycursor.close()
+        mydb.close()
