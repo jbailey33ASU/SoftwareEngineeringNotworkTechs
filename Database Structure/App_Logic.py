@@ -38,7 +38,7 @@ def apply_single_discount(license_plate, discount_id):
         if result:
             print(f"Applied one time discount '{result[0]}' to plate {license_plate}.")
         else:
-            print(f"Applied one time discount - discount ID {discount_ID} to plate {license_plate} : (Profile name not found).")
+            print(f"Applied one time discount - discount ID {discount_id} to plate {license_plate} : (Profile name not found).")
 
     finally:
         mycursor.close()
