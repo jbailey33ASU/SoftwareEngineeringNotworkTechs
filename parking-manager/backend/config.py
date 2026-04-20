@@ -1,6 +1,6 @@
 from decimal import Decimal
 from database import supabase
-
+from datetime import datetime, timezone
 # Static Grace Period Timer
 
 # TODO
@@ -30,6 +30,12 @@ def calculate_fee(
     hourly_rate: Decimal,
     discount_percent: int = 0
 ) -> Decimal:
+    
+    # Strip timezone info from both to make them comparable
+    if enter_time.tzinfo is not None:
+        enter_time = enter_time.replace(tzinfo=None)
+    if exit_time.tzinfo is not None:
+        exit_time = exit_time.replace(tzinfo=None)
     total_minutes = (exit_time - enter_time).total_seconds() / 60
 
     # Grace period. Currently just a static value at the top.

@@ -12,6 +12,13 @@ router = APIRouter(prefix="/vehicles", tags=["vehicles"])
 class PlateRequest(BaseModel):
     license_plate: str
 
+class DiscountProfileRequest(BaseModel):
+    profile_name: str
+    discount_percent: int
+
+class ApplyDiscountRequest(BaseModel):
+    license_plate: str
+    profile_name: str
 
 #Checks if a license plate exists. If it doesn't, it assumes there is no
 #Discount ID
@@ -110,9 +117,9 @@ def checkin(body: PlateRequest):
 
 
 # The other POST function you can see in FastAPI
-# This one doesn't work
-# I get errors with the calculate fee, I'll look into it later
-# TODO: Fix the fucking code moron -Jason to himself
+# This one now works! 
+# The supabase was getting the time without a timezone, but the imported exit time was trying to use a timezone
+# Changed some lines in the config to strip the timezone of each one.
 
 @router.post("/checkout")
 def checkout(body: PlateRequest):
@@ -161,6 +168,8 @@ def checkout(body: PlateRequest):
         "calculatedFee": str(fee)
     }).eq("id", active["id"]).execute()
 
+
+    #D ebugging
     return {
         "message": f"{plate} checked out successfully.",
         "session_id": active["id"],
@@ -185,4 +194,87 @@ def get_active_vehicles():
     return {
         "active_count": len(result.data),
         "vehicles": result.data
+    }
+
+# POST function to create discount profiles
+# Input is a string which will be used for a short description, and a discount percent (As a whole number)
+# Example, "Student", 50: would be a 50% discount with the name Student
+
+
+@router.post("/discounts/create")
+def create_discount_profile(body: DiscountProfileRequest):
+    
+    # Validate discount percent is between 0 and 100
+    if not (0 <= body.discount_percent <= 100):
+        raise HTTPException(
+            status_code=400,
+            detail="discount_percent must be between 0 and 100."
+        )
+
+    # Check if a profile with this name already exists
+    existing = supabase.table("DiscountProfiles") \
+        .select("discountID") \
+        .eq("profileName", body.profile_name) \
+        .execute()
+
+    if existing.data:
+        raise HTTPException(
+            status_code=400,
+            detail=f"A discount profile named '{body.profile_name}' already exists."
+        )
+
+    result = supabase.table("DiscountProfiles").insert({
+        "profileName": body.profile_name,
+        "discountPercent": body.discount_percent
+    }).execute()
+
+    created = result.data[0]
+
+    return {
+        "message": f"Discount profile '{created['profileName']}' created successfully.",
+        "discountID": created["discountID"],
+        "profileName": created["profileName"],
+        "discountPercent": created["discountPercent"]
+    }
+
+# POST Function for assigning a discount to a license plate
+# Currently, it requires an exact string match to the discount name
+# This was done so when we work on the frontend, we can make a dropdown of the discount Names
+# Instead of the IDs
+
+@router.post("/discounts/apply")
+def apply_discount(body: ApplyDiscountRequest):
+    plate = body.license_plate.upper().strip()
+
+    # Auto-register plate if it doesn't exist
+    ensure_plate_registered(plate)
+
+    # Verify the discount profile actually exists
+    discount = supabase.table("DiscountProfiles") \
+    .select("discountID, profileName, discountPercent") \
+    .eq("profileName", body.profile_name) \
+    .execute()
+
+    if not discount.data:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No discount profile named '{body.profile_name}' found."
+        )   
+
+    profile = discount.data[0]
+    
+    # Apply the discount to the license plate
+    supabase.table("LicensePlates") \
+    .update({"discountID": profile["discountID"]}) \
+    .eq("licensePlate", plate) \
+    .execute()
+
+    
+
+    return {
+        "message": f"Discount '{profile['profileName']}' applied to {plate} successfully.",
+        "licensePlate": plate,
+        "discountID": profile["discountID"],
+        "profileName": profile["profileName"],
+        "discountPercent": profile["discountPercent"]
     }
