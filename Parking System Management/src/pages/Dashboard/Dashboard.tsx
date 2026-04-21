@@ -1,13 +1,26 @@
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { FlexAlignBottom } from '@untitledui/icons';
-
+import React, { useState, useEffect } from 'react';
+import {getTotal} from '../../api.tsx';
 
 function Dashboard() {
+
+const [total, setTotal] = useState<number | null>(null);
+
+useEffect(() => {
+  async function fetchTotal() {
+    try {
+      const value = await getTotal();
+      setTotal(value);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  fetchTotal();
+}, []);
+
   return (
     <div>
       <h1>Dashboard</h1>
@@ -23,7 +36,7 @@ function Dashboard() {
               Total Vehicle Count:
             </Typography>
             <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 24 }}>
-              Like 5 idk
+              {total !== null ? total : 'Loading...'}
             </Typography>
           </CardContent>
         </Card>

@@ -12,6 +12,9 @@ router = APIRouter(prefix="/vehicles", tags=["vehicles"])
 class PlateRequest(BaseModel):
     license_plate: str
 
+class TotalPlateCount(BaseModel):
+    count: int
+
 class DiscountProfileRequest(BaseModel):
     profile_name: str
     discount_percent: int
@@ -19,6 +22,17 @@ class DiscountProfileRequest(BaseModel):
 class ApplyDiscountRequest(BaseModel):
     license_plate: str
     profile_name: str
+    
+
+#Gets total plate count in database
+@router.get("/total")
+def get_plate_count():
+    existing = supabase.table("LicensePlates") \
+        .select("licensePlate") \
+        .execute()
+    return len(existing.data)
+    
+
 
 #Checks if a license plate exists. If it doesn't, it assumes there is no
 #Discount ID
