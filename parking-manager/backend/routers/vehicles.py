@@ -12,6 +12,9 @@ router = APIRouter(prefix="/vehicles", tags=["vehicles"])
 class PlateRequest(BaseModel):
     license_plate: str
 
+class GetAllPlates(BaseModel):
+    license_plate: str
+
 class TotalPlateCount(BaseModel):
     count: int
 
@@ -31,7 +34,13 @@ def get_plate_count():
         .select("licensePlate") \
         .execute()
     return len(existing.data)
-    
+
+@router.get("/plates")
+def get_all_plates():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("*") \
+        .execute()
+    return existing.data
 
 
 #Checks if a license plate exists. If it doesn't, it assumes there is no

@@ -10,3 +10,14 @@ export async function getTotal(): Promise<number> {
   const text = await response.text();
   return Number(text);
 }
+
+export async function getPlates(): Promise<object> {
+  const response = await fetch(`${API_URL}/vehicles/plates`);
+
+  if (!response.ok) {
+    throw new Error('it broke lol');
+  }
+
+  const text = await response.text();
+  return JSON.parse(text);
+}

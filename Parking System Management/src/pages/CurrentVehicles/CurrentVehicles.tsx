@@ -5,22 +5,28 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import React, { useState, useEffect } from 'react';
+import {getPlates} from '../../api.tsx';
 
-function createData(
-  plate: string,
-  owner: string,
-) {
-  return { plate, owner};
-}
-
-const rows = [
-  createData('plate1', "john pork"),
-  createData('plate2', "spongebob"),
-  createData('plate4', "kanye west"),
-  createData('plate5', "dave blunts"),
-];
 
 function CurrentVehicles() {
+  const [plates, setPlates] = useState<any>(null);
+
+  const noExit = "No exit time"
+
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const data = await getPlates();
+        setPlates(data);
+        console.log(Object(data)[0].id)
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchPlates();
+  }, []);
+
   return (
     <div>
       <h1>CurrentVehicles</h1>
@@ -29,33 +35,24 @@ function CurrentVehicles() {
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
-          <TableRow>
-            <TableCell>License Plate</TableCell>
-            <TableCell align="right">Owner</TableCell>
-            {/*
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-            */}
+          <TableRow sx={{backgroundColor: '#bfbfbf'}}>
+            <TableCell>Entry ID</TableCell>
+            <TableCell align="right">License Plate</TableCell>
+            <TableCell align="right">Enter Time</TableCell>
+            <TableCell align="right">Exit Time</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.plate}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.plate}
-              </TableCell>
-              <TableCell align="right">{row.owner}</TableCell>
-              {/*
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-              */}
-            </TableRow>
+          {plates?.map((plate:any) => (
+            
+              <TableRow key={plate.id}>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}}>{plate.id}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.licensePlate}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.enterTime}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.exitTime !== null ? plate.exitTime : noExit}</TableCell>
+              </TableRow>
           ))}
+
         </TableBody>
       </Table>
     </TableContainer>
