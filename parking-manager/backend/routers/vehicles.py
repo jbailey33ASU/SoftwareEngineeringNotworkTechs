@@ -14,6 +14,9 @@ class PlateRequest(BaseModel):
 
 class GetAllPlates(BaseModel):
     license_plate: str
+    
+class GetRates(BaseModel):
+    rate: int
 
 class TotalPlateCount(BaseModel):
     count: int
@@ -38,6 +41,13 @@ def get_plate_count():
 @router.get("/plates")
 def get_all_plates():
     existing = supabase.table("LicensePlateTracker") \
+        .select("*") \
+        .execute()
+    return existing.data
+    
+@router.get("/rates")
+def get_hourly_rate():
+    existing = supabase.table("ParkingConfig") \
         .select("*") \
         .execute()
     return existing.data

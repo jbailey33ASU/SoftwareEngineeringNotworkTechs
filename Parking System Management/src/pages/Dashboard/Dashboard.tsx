@@ -2,7 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import React, { useState, useEffect } from 'react';
-import {getTotal} from '../../api.tsx';
+import {getTotal, getHourlyValue} from '../../api.tsx';
 
 function Dashboard() {
 
@@ -19,6 +19,21 @@ useEffect(() => {
   }
 
   fetchTotal();
+}, []);
+
+const [value, setValue] = useState<number | null>(null);
+
+useEffect(() => {
+  async function fetchValue() {
+    try {
+      const value = await getHourlyValue();
+      setValue(value);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  fetchValue();
 }, []);
 
   return (
@@ -43,10 +58,10 @@ useEffect(() => {
         <Card sx={{ minWidth: 275, maxWidth: 275, backgroundColor: 'ghostwhite' }}>
           <CardContent>
             <Typography gutterBottom sx={{ color: 'text.primary', fontSize: 14 }}>
-              Total Value of Customers:
+              Total Hourly Value of Customers:
             </Typography>
             <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 24 }}>
-              6 maybe 7 dollars
+              ${value !== null ? value : 'Loading...'}
             </Typography>
           </CardContent>
         </Card>
