@@ -19,7 +19,6 @@ function CurrentVehicles() {
       try {
         const data = await getPlates();
         setPlates(data);
-        console.log(Object(data)[0].id)
       } catch (error) {
         console.error(error);
       }

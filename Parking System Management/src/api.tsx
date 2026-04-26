@@ -22,6 +22,17 @@ export async function getPlates(): Promise<object> {
   return JSON.parse(text);
 }
 
+export async function getPlate(license_plate: string): Promise<object> {
+    const response = await fetch(`${API_URL}/vehicles/plates?license_plate=${license_plate}`);
+
+    if(!response.ok) {
+        throw new Error('plate not found');
+    }
+
+    const text = await response.text();
+    return JSON.parse(text);
+}
+
 export async function getHourlyValue(): Promise<number> {
   const response = await fetch(`${API_URL}/vehicles/plates`);
   const rateresponse = await fetch(`${API_URL}/vehicles/rates`);

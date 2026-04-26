@@ -12,15 +12,6 @@ router = APIRouter(prefix="/vehicles", tags=["vehicles"])
 class PlateRequest(BaseModel):
     license_plate: str
 
-class GetAllPlates(BaseModel):
-    license_plate: str
-    
-class GetRates(BaseModel):
-    rate: int
-
-class TotalPlateCount(BaseModel):
-    count: int
-
 class DiscountProfileRequest(BaseModel):
     profile_name: str
     discount_percent: int
@@ -44,6 +35,18 @@ def get_all_plates():
         .select("*") \
         .execute()
     return existing.data
+    
+@router.get("/plate")
+def get_plate(license_plate: PlateRequest):
+    try: 
+        existing = supabase.table("LicensePlateTracker") \
+            .select(license_plate.license_plate) \
+            .execute()
+        
+        return existing.data
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Plate not found"}
     
 @router.get("/rates")
 def get_hourly_rate():

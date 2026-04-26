@@ -1,4 +1,5 @@
 function PlateLookup() {
+
   return (
     <div>
       <h1>PlateLookup</h1>
