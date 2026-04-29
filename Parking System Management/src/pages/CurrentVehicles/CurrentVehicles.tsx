@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import React, { useState, useEffect } from 'react';
 import {getPlates} from '../../api.tsx';
-
+import moment from 'moment';
 
 function CurrentVehicles() {
   const [plates, setPlates] = useState<any>(null);
@@ -47,8 +47,8 @@ function CurrentVehicles() {
               <TableRow key={plate.id}>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}}>{plate.id}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.licensePlate}</TableCell>
-                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.enterTime}</TableCell>
-                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.exitTime !== null ? plate.exitTime : noExit}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{moment(plate.enterTime).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.exitTime !== null ? moment(plate.exitTime).format("MMMM Do YYYY, h:mm:ss a") : noExit}</TableCell>
               </TableRow>
           ))}
 

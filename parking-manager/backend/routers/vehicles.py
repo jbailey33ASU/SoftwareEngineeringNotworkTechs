@@ -36,6 +36,14 @@ def get_all_plates():
         .execute()
     return existing.data
     
+@router.get("/discountedPlates")
+def get_discounted_plates():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("*,DiscountProfiles!inner(*)") \
+        .not_.is_("discountID", "null") \
+        .execute()
+    return existing.data 
+       
 @router.get("/plate")
 def get_plate(license_plate: PlateRequest):
     try: 
@@ -47,6 +55,8 @@ def get_plate(license_plate: PlateRequest):
     except Exception as e:
         print(f"Error: {e}")
         return {"message": "Plate not found"}
+
+
     
 @router.get("/rates")
 def get_hourly_rate():
