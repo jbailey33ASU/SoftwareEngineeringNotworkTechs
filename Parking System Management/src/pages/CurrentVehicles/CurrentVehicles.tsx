@@ -28,8 +28,10 @@ function CurrentVehicles() {
 
   return (
     <div>
+      <div style={{display: "grid", alignContent: "center", justifyContent: "space-around"}}>
       <h1>CurrentVehicles</h1>
       <p>Quick overview of the current vehicles in the parking garage</p>
+      </div>
       <div>
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

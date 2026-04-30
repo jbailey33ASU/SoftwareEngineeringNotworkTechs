@@ -11,6 +11,17 @@ export async function getTotal(): Promise<number> {
   return Number(text);
 }
 
+export async function getActiveTotal(): Promise<number> {
+  const response = await fetch(`${API_URL}/vehicles/activeTotal`);
+
+  if (!response.ok) {
+    throw new Error('it broke lol');
+  }
+
+  const text = await response.text();
+  return Number(text);
+}
+
 export async function getPlates(): Promise<object> {
   const response = await fetch(`${API_URL}/vehicles/plates`);
 
@@ -33,6 +44,28 @@ export async function getDiscountPlates(): Promise<object> {
   return JSON.parse(text);
 }
 
+export async function getRecentEntries(): Promise<object> {
+  const response = await fetch(`${API_URL}/vehicles/recentEntries`);
+
+  if (!response.ok) {
+    throw new Error('it broke lol');
+  }
+
+  const text = await response.text();
+  return JSON.parse(text);
+}
+
+export async function getRecentExits(): Promise<object> {
+  const response = await fetch(`${API_URL}/vehicles/recentExits`);
+
+  if (!response.ok) {
+    throw new Error('it broke lol');
+  }
+
+  const text = await response.text();
+  return JSON.parse(text);
+}
+
 export async function getPlate(license_plate: string): Promise<object> {
     const response = await fetch(`${API_URL}/vehicles/plates?license_plate=${license_plate}`);
 
@@ -45,7 +78,7 @@ export async function getPlate(license_plate: string): Promise<object> {
 }
 
 export async function getHourlyValue(): Promise<number> {
-  const response = await fetch(`${API_URL}/vehicles/plates`);
+  const response = await fetch(`${API_URL}/vehicles/activePlates`);
   const rateresponse = await fetch(`${API_URL}/vehicles/rates`);
 
   if (!response.ok || !rateresponse.ok) {
@@ -62,12 +95,6 @@ export async function getHourlyValue(): Promise<number> {
   var total = 0;
 
   var hourlyRate = 0;
-
-  obj?.map((plate: any) => {
-    if(plate.exitTime !== 'null') {
-        delete obj[plate.id]
-    }
-  });
 
   rateobj?.map((rate: any) => {
     if(rate.configKey === "hourly_rate") {

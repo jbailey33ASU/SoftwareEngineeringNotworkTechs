@@ -28,6 +28,14 @@ def get_plate_count():
         .select("licensePlate") \
         .execute()
     return len(existing.data)
+    
+@router.get("/activeTotal")
+def get_plate_count():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("licensePlate") \
+        .is_("exitTime", "null") \
+        .execute()
+    return len(existing.data)
 
 @router.get("/plates")
 def get_all_plates():
@@ -35,6 +43,35 @@ def get_all_plates():
         .select("*") \
         .execute()
     return existing.data
+    
+@router.get("/activePlates")
+def get_all_plates():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("*") \
+        .is_("exitTime", "null") \
+        .execute()
+    return existing.data
+    
+
+@router.get("/recentEntries")
+def get_all_plates():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("*") \
+        .order("enterTime", desc=True) \
+        .execute()
+    return existing.data
+    
+@router.get("/recentExits")
+def get_all_plates():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("*") \
+        .not_.is_("exitTime", "null") \
+        .order("exitTime", desc=True) \
+        .execute()
+    return existing.data
+    
+
+    
     
 @router.get("/discountedPlates")
 def get_discounted_plates():

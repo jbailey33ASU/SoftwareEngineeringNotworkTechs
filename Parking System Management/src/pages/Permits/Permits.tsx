@@ -28,8 +28,10 @@ function Permits() {
 
   return (
     <div>
+      <div style={{display: "grid", alignContent: "center", justifyContent: "space-around"}}>
       <h1>Discounted Vehicles</h1>
       <p>Quick overview of the current vehicles in the parking garage with discounts</p>
+      </div>
       <div>
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

@@ -5,66 +5,96 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
-function createData(
-  plate: string,
-  owner: string,
-  action: string,
-  time: string,
-) {
-  return { plate, owner, action, time};
-}
-
-const rows = [
-  createData('plate1', "john pork", "enter", "time"),
-  createData('plate2', "spongebob", "enter", "time"),
-  createData('plate4', "kanye west", "release new album", "never"),
-  createData('plate5', "dave blunts", "enter", "time"),
-];
+import React, { useState, useEffect } from 'react';
+import {getRecentEntries, getRecentExits} from '../../api.tsx';
+import moment from 'moment';
 
 function RecentActivity() {
+
+  const [entries, setEntries] = useState<any>(null);
+  const [exits, setExits] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const data = await getRecentEntries();
+        setEntries(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchPlates();
+  }, []);
+
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const data = await getRecentExits();
+        setExits(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchPlates();
+  }, []);
+
+
   return (
     <div>
+      <div style={{display: "grid", alignContent: "center", justifyContent: "space-around"}}>
       <h1>RecentActivity</h1>
-      <p>Quick overview of recent entry/exits</p>
+      <p>Recent entries/exits to the parking garage</p>
+      </div>
       <div>
-      <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>License Plate</TableCell>
-                  <TableCell align="right">Owner</TableCell>
-                  <TableCell align="right">Action</TableCell>
-                  <TableCell align="right">Time</TableCell>
-                  {/*
-                  <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                  <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                  <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                  */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow
-                    key={row.plate}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.plate}
-                    </TableCell>
-                    <TableCell align="right">{row.owner}</TableCell>
-                    <TableCell align="right">{row.action}</TableCell>
-                    <TableCell align="right">{row.time}</TableCell>
-                    {/*
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
-                    */}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+        <div style={{display: "flex", justifyContent: "space-around"}}>
+          <p style={{width: "15%", textAlign: "left"}}>Recent Entries</p>
+          <p style={{width: "15%", textAlign: "right"}}>Recent Exits</p>
+        </div>
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+
+      <TableContainer sx={{width: "45%", alignContent: "left"}} component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow sx={{backgroundColor: '#bfbfbf'}}>
+            <TableCell>License Plate</TableCell>
+            <TableCell align="right">Enter Time</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {entries?.map((plate:any) => (
+              <TableRow key={plate.id}>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}}>{plate.licensePlate}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{moment(plate.enterTime).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>
+              </TableRow>
+          ))}
+
+        </TableBody>
+      </Table>
+      </TableContainer>
+
+      
+      <TableContainer sx={{width: "45%", alignContent: "right"}} component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table 2">
+        <TableHead>
+          <TableRow sx={{backgroundColor: '#bfbfbf'}}>
+            <TableCell>License Plate</TableCell>
+            <TableCell align="right">Exit Time</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {exits?.map((plate:any) => (
+              <TableRow key={plate.id}>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}}>{plate.licensePlate}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{moment(plate.exitTime).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>
+              </TableRow>
+          ))}
+
+        </TableBody>
+      </Table>
+      </TableContainer>
+
+      </div>
+
       </div>
     </div>
   );
