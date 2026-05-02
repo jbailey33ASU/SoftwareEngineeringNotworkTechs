@@ -1,0 +1,5 @@
+#!/bin/bash
+cd "parking-manager/backend"
+py -m venv venv
+source venv/Scripts/activate
+uvicorn main:app -reload
