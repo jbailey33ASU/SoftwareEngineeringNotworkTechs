@@ -1,5 +1,6 @@
 const API_URL: string = 'http://localhost:8000';
 
+
 export async function getTotal(): Promise<number> {
   const response = await fetch(`${API_URL}/vehicles/total`);
 
@@ -10,6 +11,7 @@ export async function getTotal(): Promise<number> {
   const text = await response.text();
   return Number(text);
 }
+
 
 export async function getActiveTotal(): Promise<number> {
   const response = await fetch(`${API_URL}/vehicles/activeTotal`);

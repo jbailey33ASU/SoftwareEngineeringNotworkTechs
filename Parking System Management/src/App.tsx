@@ -5,17 +5,31 @@ import CurrentVehicles from "./pages/CurrentVehicles/CurrentVehicles.tsx";
 import RecentActivity from "./pages/RecentActivity/RecentActivity.tsx";
 import PlateLookup from "./pages/PlateLookup/PlateLookup.tsx";
 import Permits from "./pages/Permits/Permits.tsx";
+import Login from "./pages/Login/Login.tsx"
+import Register from "./pages/Register/Register.tsx"
+import Home from "./pages/Home/Home.tsx"
+import DefaultLayout from "./Authenticated.tsx";
+import ProtectedLayout from "./Unauthenticated.tsx";
+
 
 function App() {
+
+  
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/current" element={<CurrentVehicles />} />
-        <Route path="/activity" element={<RecentActivity />} />
-        <Route path="/lookup" element={<PlateLookup />} />
-        <Route path="/permits" element={<Permits />} />
+        <Route element={<DefaultLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+        <Route element={<ProtectedLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/current" element={<CurrentVehicles />} />
+          <Route path="/activity" element={<RecentActivity />} />
+          <Route path="/lookup" element={<PlateLookup />} />
+          <Route path="/permits" element={<Permits />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

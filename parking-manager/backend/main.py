@@ -8,17 +8,22 @@ from fastapi.middleware.cors import CORSMiddleware
 
 #Imports the vehicles code.
 from routers.vehicles import router as vehicles_router
+from routers.user import router as user_router
 
 
 #Creating FastAPI app, getting the route files. This is what uvicorn sees when
 #You run the main:app command.
 app = FastAPI(title="Parking Garage Manager")
 app.include_router(vehicles_router)
+app.include_router(user_router)
 
 origins = ['https://localhost:5173', 'https://localhost:8080']
 app.add_middleware(
     CORSMiddleware,
     allow_origins = ['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 #FastAPI Function to make sure the server/connection is all setup.

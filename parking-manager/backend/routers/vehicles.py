@@ -45,16 +45,15 @@ def get_all_plates():
     return existing.data
     
 @router.get("/activePlates")
-def get_all_plates():
+def get_active_plates():
     existing = supabase.table("LicensePlateTracker") \
         .select("*") \
         .is_("exitTime", "null") \
         .execute()
     return existing.data
-    
 
 @router.get("/recentEntries")
-def get_all_plates():
+def get_recent_entries():
     existing = supabase.table("LicensePlateTracker") \
         .select("*") \
         .order("enterTime", desc=True) \
@@ -62,7 +61,7 @@ def get_all_plates():
     return existing.data
     
 @router.get("/recentExits")
-def get_all_plates():
+def get_recent_exits():
     existing = supabase.table("LicensePlateTracker") \
         .select("*") \
         .not_.is_("exitTime", "null") \

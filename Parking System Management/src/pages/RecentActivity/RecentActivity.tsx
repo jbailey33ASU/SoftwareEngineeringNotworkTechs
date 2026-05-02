@@ -52,7 +52,7 @@ function RecentActivity() {
         </div>
       <div style={{display: "flex", justifyContent: "space-between"}}>
 
-      <TableContainer sx={{width: "45%", alignContent: "left"}} component={Paper}>
+      <TableContainer sx={{width: "45%", alignContent: "left", backgroundColor: 'ghostwhite'}} component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow sx={{backgroundColor: '#bfbfbf'}}>
@@ -73,7 +73,7 @@ function RecentActivity() {
       </TableContainer>
 
       
-      <TableContainer sx={{width: "45%", alignContent: "right"}} component={Paper}>
+      <TableContainer sx={{width: "45%", alignContent: "right", backgroundColor: 'ghostwhite'}} component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table 2">
         <TableHead>
           <TableRow sx={{backgroundColor: '#bfbfbf'}}>

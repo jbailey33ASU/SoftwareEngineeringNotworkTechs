@@ -6,7 +6,9 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useState, useEffect } from 'react';
 import {getPlates} from '../../api.tsx';
-
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks";
+import { getUser, logout } from "../../slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: 'absolute',
@@ -21,6 +23,11 @@ const style = {
 };
 
 function Navbar() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const basicUserInfo = useAppSelector((state) => state.auth.basicUserInfo);
+  const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -29,6 +36,23 @@ function Navbar() {
     const t = filterPlate();
     console.log(t); 
   }
+
+    useEffect(() => {
+      if (basicUserInfo) {
+        dispatch(getUser(basicUserInfo.user_id));
+      }
+    }, [basicUserInfo]);
+
+  const handleLogout = async () => {
+      try {
+        await dispatch(
+          logout()
+        ).unwrap();
+      } catch (e) {
+        console.error(e);
+      }
+  }
+
   const handleClose = () => setOpen(false);
 
   const [plates, setPlates] = useState<any>(null);
@@ -119,6 +143,8 @@ function Navbar() {
               </Link>
             </li>
           </ul>
+          {/*<h4 style={{color: "white"}}>UserID: {basicUserInfo?.user_id}</h4>*/}
+          <Button onClick={handleLogout} sx={{backgroundColor: 'white', color: 'black', justifyContent: "space-around"}}>Logout</Button>
           <form className="d-flex" role="search">
             <input
               className="form-control me-2"
@@ -127,6 +153,7 @@ function Navbar() {
               aria-label="Search"
             />
             <Button onClick={handleOpen} sx={{backgroundColor: 'white', color: 'green'}}>Search</Button>
+
               <Modal
                 open={open}
                 onClose={handleClose}
