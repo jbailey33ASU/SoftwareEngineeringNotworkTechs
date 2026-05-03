@@ -24,6 +24,28 @@ export async function getActiveTotal(): Promise<number> {
   return Number(text);
 }
 
+export async function getActivePlates(): Promise<object> {
+  const response = await fetch(`${API_URL}/vehicles/activePlates`);
+
+  if (!response.ok) {
+    throw new Error('it broke lol');
+  }
+
+  const text = await response.text();
+  return JSON.parse(text);
+}
+
+export async function getInactivePlates(): Promise<object> {
+  const response = await fetch(`${API_URL}/vehicles/inactivePlates`);
+
+  if (!response.ok) {
+    throw new Error('it broke lol');
+  }
+
+  const text = await response.text();
+  return JSON.parse(text);
+}
+
 export async function getPlates(): Promise<object> {
   const response = await fetch(`${API_URL}/vehicles/plates`);
 

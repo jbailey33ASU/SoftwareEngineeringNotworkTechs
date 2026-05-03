@@ -29,8 +29,8 @@ function CurrentVehicles() {
   return (
     <div>
       <div style={{display: "grid", alignContent: "center", justifyContent: "space-around"}}>
-      <h1>CurrentVehicles</h1>
-      <p>Quick overview of the current vehicles in the parking garage</p>
+      <h1>Vehicle Inventory</h1>
+      <p>Quick overview of the vehicles tracked by the parking garage manager</p>
       </div>
       <div>
       <TableContainer component={Paper}>

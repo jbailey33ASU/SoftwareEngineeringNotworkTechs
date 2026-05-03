@@ -49,6 +49,16 @@ def get_active_plates():
     existing = supabase.table("LicensePlateTracker") \
         .select("*") \
         .is_("exitTime", "null") \
+        .order("id", desc=False) \
+        .execute()
+    return existing.data
+
+@router.get("/inactivePlates")
+def get_inactive_plates():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("*") \
+        .not_.is_("exitTime", "null") \
+        .order("id", desc=False) \
         .execute()
     return existing.data
 
