@@ -76,7 +76,7 @@ Python-dotenv reads the .env credentials so they are secure and unchangeable. (T
 
  
 
-## 5: With the VM active and everything installed, run “uvicorn main:app –reload". 
+## 5: With the VM active and everything installed, run `uvicorn main:app -–reload`. 
 You should see:   
 
 `INFO: Uvicorn running on http://127.0.0.1:8000`
