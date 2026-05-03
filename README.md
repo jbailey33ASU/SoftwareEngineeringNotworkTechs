@@ -41,15 +41,26 @@ Your .env file should already be properly setup from Github. From what I read on
 
  
 
-Next, use a VM to run everything on. This one I’m not quite sure why I’m doing, but the funny youtube man told me to, and it works. 
+### Frontend
 
+You must have node.js installed to run the front end (https://nodejs.org/en/download)
+
+1: open command prompt and navigate to the frontend folder (InstallPath\Parking System Management)
+
+2: install the dependencies via npm by running `npm install`
+
+3: start the frontend server by running `npm run start`
+
+Use any of the provided addresses to open the website in your browser (Note: the backend server must also be running for the website to be functional)
+
+### Backend
  
 
-1: open command prompt and navigate to the backend folder. “C:\Users\YouDumbass\WhereeverYouPutIt\parking-manager\backend" 
+1: open git bash (https://git-scm.com/install/) and navigate to the backend folder. “C:\Users\YouDumbass\WhereeverYouPutIt\parking-manager\backend" 
 
 2:  Create vm with `python -m venv venv` (only needed once I think) 
 
-3: You must do this every time you try to run the fastAPI window. `venv\Scripts\activate`. You should see `(venv)` at the beginning of your terminal line now. 
+3: You must do this every time you try to run the fastAPI window. `source venv\Scripts\activate`. You should see `(venv)` at the beginning of your terminal line now. 
 
 4: While the VM is active, you’ll need the following dependencies IN THE VM. `pip install fastapi uvicorn supabase python-dotenv`
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom"
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -36,12 +37,6 @@ function Navbar() {
     const t = filterPlate();
     console.log(t); 
   }
-
-    useEffect(() => {
-      if (basicUserInfo) {
-        dispatch(getUser(basicUserInfo.user_id));
-      }
-    }, [basicUserInfo]);
 
   const handleLogout = async () => {
       try {
@@ -123,27 +118,61 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "text-white" : "text-secondary"}`
+                }
+              >
                 Dashboard
-              </Link>
+              </NavLink>
             </li>
+
             <li className="nav-item">
-              <Link className="nav-link" to="/current">
+              <NavLink
+                to="/current"
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "text-white" : "text-secondary"}`
+                }
+              >
                 Vehicle Inventory
-              </Link>
+              </NavLink>
             </li>
+
             <li className="nav-item">
-              <Link className="nav-link" to="/activity">
+              <NavLink
+                to="/activity"
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "text-white" : "text-secondary"}`
+                }
+              >
                 Recent Activity
-              </Link>
+              </NavLink>
             </li>
+
             <li className="nav-item">
-              <Link className="nav-link" to="/permits">
+              <NavLink
+                to="/permits"
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "text-white" : "text-secondary"}`
+                }
+              >
                 Discounts
-              </Link>
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
+              <NavLink
+                to="/actions"
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "text-white" : "text-secondary"}`
+                }
+              >
+                Actions
+              </NavLink>
             </li>
           </ul>
-          {/*<h4 style={{color: "white"}}>UserID: {basicUserInfo?.user_id}</h4>*/}
           <Button onClick={handleLogout} sx={{backgroundColor: 'white', color: 'black', justifyContent: "space-around"}}>Logout</Button>
           <form className="d-flex" role="search">
             <input

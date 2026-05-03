@@ -20,6 +20,76 @@ class ApplyDiscountRequest(BaseModel):
     license_plate: str
     profile_name: str
     
+class PlateInsert(BaseModel):
+    plateID: int
+    licensePlate: str
+    discountID: int
+    discountStart: str
+    discountEnd: str
+    enterTime: str
+    exitTime: str
+
+class PlateRemove(BaseModel):
+    licensePlate: str
+    
+def snil(s: str):
+    if s == "":
+        return None
+    else:
+        return s
+        
+def snul(i: int):
+    if i == 0:
+        return None
+    else:
+        return i
+    
+@router.post("/insert")
+def insert_plate(Plate: PlateInsert):
+    try:
+        LicensePlates = supabase.table("LicensePlates") \
+            .insert({"licensePlate": Plate.licensePlate, "discountID": snul(Plate.discountID)}) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error inserting into LicensePlates"}
+    
+    try:
+        LicensePlateTracker = supabase.table("LicensePlateTracker") \
+            .insert({"id": Plate.plateID, "licensePlate": Plate.licensePlate, "discountID": snil(Plate.discountID), 
+                "discountStart": snil(Plate.discountStart), "discountEnd": snil(Plate.discountEnd),
+                "enterTime": Plate.enterTime, "exitTime": snil(Plate.exitTime)}) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error inserting into LicensePlateTracker"}
+        
+@router.post("/remove")
+def insert_plate(Plate: PlateRemove):
+    try:
+        LicensePlateTracker = supabase.table("LicensePlateTracker") \
+            .delete() \
+            .eq("licensePlate", Plate.licensePlate) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error deleting from LicensePlateTracker"}
+    
+    try:
+        LicensePlate = supabase.table("LicensePlates") \
+            .delete() \
+            .eq("licensePlate", Plate.licensePlate) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error inserting into LicensePlateTracker"}
+        
+@router.get("/nextAvailableID")
+def get_next_ID():
+    existing = supabase.table("LicensePlateTracker") \
+        .select("id") \
+        .execute()
+    return len(existing.data) + 1
 
 #Gets total plate count in database
 @router.get("/total")
@@ -102,7 +172,13 @@ def get_plate(license_plate: PlateRequest):
         print(f"Error: {e}")
         return {"message": "Plate not found"}
 
-
+@router.get("/discounts")
+def get_hourly_rate():
+    existing = supabase.table("DiscountProfiles") \
+        .select("*") \
+        .order("discountID", desc=False) \
+        .execute()
+    return existing.data
     
 @router.get("/rates")
 def get_hourly_rate():
@@ -110,6 +186,7 @@ def get_hourly_rate():
         .select("*") \
         .execute()
     return existing.data
+    
 
 
 #Checks if a license plate exists. If it doesn't, it assumes there is no

@@ -95,7 +95,7 @@ useEffect(() => {
         <Card sx={{ minWidth: 275, maxWidth: 275, backgroundColor: 'ghostwhite' }}>
           <CardContent>
             <Typography gutterBottom sx={{ color: 'text.primary', fontSize: 14 }}>
-              Total Hourly Value of Customers:
+              Total Hourly Value of Active Vehicles:
             </Typography>
             <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 24 }}>
               ${value !== null ? value : 'Loading...'}
@@ -103,8 +103,6 @@ useEffect(() => {
           </CardContent>
         </Card>
       </div>
-
-      <div style={{display: "flex", gap: "100px", width: "10px"}}></div>
 
       <div style={{display: "flex", justifyContent: "space-around"}}>
         <p style={{width: "15%", textAlign: "left", marginTop: "40px"}}>Active Vehicles</p>
@@ -153,7 +151,7 @@ useEffect(() => {
                 <TableCell sx={{backgroundColor: 'ghostwhite'}}>{plate.id}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.licensePlate}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{moment(plate.enterTime).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>
-                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.exitTime !== null ? moment(plate.exitTime).format("MMMM Do YYYY, h:mm:ss a") : noExit}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{moment(plate.exitTime).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>
               </TableRow>
           ))}
 

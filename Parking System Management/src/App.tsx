@@ -10,6 +10,7 @@ import Register from "./pages/Register/Register.tsx"
 import Home from "./pages/Home/Home.tsx"
 import DefaultLayout from "./Authenticated.tsx";
 import ProtectedLayout from "./Unauthenticated.tsx";
+import Actions from "./pages/Actions/Actions.tsx"
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/activity" element={<RecentActivity />} />
           <Route path="/lookup" element={<PlateLookup />} />
           <Route path="/permits" element={<Permits />} />
+          <Route path="/actions" element={<Actions />} />
         </Route>
       </Routes>
     </BrowserRouter>
