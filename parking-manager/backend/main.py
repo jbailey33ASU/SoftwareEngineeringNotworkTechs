@@ -17,11 +17,9 @@ app = FastAPI(title="Parking Garage Manager")
 app.include_router(vehicles_router)
 app.include_router(user_router)
 
-origins = ['https://localhost:5173', 'https://localhost:8080']
 app.add_middleware(
     CORSMiddleware,
     allow_origins = ['*'],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
