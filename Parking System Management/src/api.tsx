@@ -4,12 +4,41 @@ const API_URL: string = 'http://localhost:8000';
 export async function insertPlate(plateObject: object) {
   const nextIDresponse = await fetch(`${API_URL}/vehicles/nextAvailableID`);
   const nextID = Number(await nextIDresponse.text());
+  const discounts = await fetch(`${API_URL}/vehicles/discounts`);
+
+  const discount = JSON.parse(await discounts.text());
+
+  discount.map((disc:any) => {
+    //console.log(disc.profileName);
+    //console.log(plateObject)
+    if (disc.profileName === (plateObject as any).discountID) {
+      (plateObject as any).discountID = disc.discountID;
+    }
+  });
+
+  //console.log(plateObject);
 
   plateObject = Object.assign({"plateID": nextID}, plateObject);
-
+  
   fetch(`${API_URL}/vehicles/insert`, {
     method: "POST",
     body: JSON.stringify(plateObject),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  });
+  
+}
+
+export async function insertDiscount(discountObject: object) {
+  const nextIDresponse = await fetch(`${API_URL}/vehicles/nextAvailableDiscountID`);
+  const nextID = Number(await nextIDresponse.text());
+
+  discountObject = Object.assign({"discountID": nextID}, discountObject);
+
+  fetch(`${API_URL}/vehicles/insertDiscount`, {
+    method: "POST",
+    body: JSON.stringify(discountObject),
     headers: {
       "Content-type": "application/json; charset=UTF-8"
     }
@@ -27,6 +56,40 @@ export async function deletePlate(licensePlate: string) {
       "Content-type": "application/json; charset=UTF-8"
     }
   });
+}
+
+export async function getDiscounts(): Promise<object> {
+  const response = await fetch(`${API_URL}/vehicles/discounts`);
+
+  if (!response.ok) {
+    throw new Error('it broke lol');
+  }
+
+  const text = await response.text();
+  return JSON.parse(text);	
+}
+
+export async function getPlates(): Promise<object> {
+  const response = await fetch(`${API_URL}/vehicles/plates`);
+  const discounts = await fetch(`${API_URL}/vehicles/discounts`);
+
+  if (!response.ok || !discounts.ok) {
+    throw new Error('it broke lol');
+  }
+
+  var text = JSON.parse(await response.text());
+  const discount = JSON.parse(await discounts.text());
+  
+  text?.map((plate:any) => {
+    if(plate.discountID !== 0 && (plate.discountID in discount)) {
+      plate.discountProfile = discount[plate.discountID-1].profileName;
+      plate.discountPercent = discount[plate.discountID-1].discountPercent;
+    } else {
+      plate.discountProfile = "None";
+      plate.discountPercent = 0
+    }
+  });
+  return text;
 }
 
 export async function getTotal(): Promise<number> {
@@ -74,16 +137,7 @@ export async function getInactivePlates(): Promise<object> {
   return JSON.parse(text);
 }
 
-export async function getPlates(): Promise<object> {
-  const response = await fetch(`${API_URL}/vehicles/plates`);
 
-  if (!response.ok) {
-    throw new Error('it broke lol');
-  }
-
-  const text = await response.text();
-  return JSON.parse(text);
-}
 
 export async function getDiscountPlates(): Promise<object> {
   const response = await fetch(`${API_URL}/vehicles/discountedPlates`);
@@ -159,7 +213,7 @@ export async function getHourlyValue(): Promise<number> {
   obj.map((plate: any) => {
     
     if(plate.discountID in discountobj) {
-      var discount = discountobj[plate.discountID];
+      var discount = discountobj[plate.discountID-1];
       total += hourlyRate * (discount.discountPercent/100);
     } else {
       total = total + hourlyRate;

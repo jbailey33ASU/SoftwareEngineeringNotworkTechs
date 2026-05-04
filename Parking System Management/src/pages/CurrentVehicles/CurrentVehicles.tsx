@@ -39,6 +39,8 @@ function CurrentVehicles() {
           <TableRow sx={{backgroundColor: '#bfbfbf'}}>
             <TableCell>Entry ID</TableCell>
             <TableCell align="right">License Plate</TableCell>
+            <TableCell align="right">Discount Profile</TableCell>
+            <TableCell align="right">Discount Amount</TableCell>
             <TableCell align="right">Enter Time</TableCell>
             <TableCell align="right">Exit Time</TableCell>
           </TableRow>
@@ -49,6 +51,8 @@ function CurrentVehicles() {
               <TableRow key={plate.id}>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}}>{plate.id}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.licensePlate}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.discountProfile}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.discountPercent + "%"}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{moment(plate.enterTime).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.exitTime !== null ? moment(plate.exitTime).format("MMMM Do YYYY, h:mm:ss a") : noExit}</TableCell>
               </TableRow>

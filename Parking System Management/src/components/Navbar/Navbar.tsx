@@ -10,6 +10,7 @@ import {getPlates} from '../../api.tsx';
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks";
 import { getUser, logout } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import moment from 'moment';
 
 const style = {
   position: 'absolute',
@@ -194,10 +195,10 @@ function Navbar() {
                     {filterPlate()?.licensePlate}
                   </Typography>
                   <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Entry time: {filterPlate()?.enterTime}
+                    Entry time: {moment(filterPlate()?.enterTime).format("MMMM Do YYYY, h:mm:ss a")}
                   </Typography>
                   <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Exit time: {filterPlate()?.exitTime !== null ? filterPlate()?.exitTime : "No exit time"}
+                    Exit time: {filterPlate()?.exitTime !== null ? moment(filterPlate()?.exitTime).format("MMMM Do YYYY, h:mm:ss a") : "No exit time"}
                   </Typography>
                 </Box>
               </Modal>

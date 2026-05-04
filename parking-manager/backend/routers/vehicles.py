@@ -32,6 +32,11 @@ class PlateInsert(BaseModel):
 class PlateRemove(BaseModel):
     licensePlate: str
     
+class DiscountInsert(BaseModel):
+    discountID: int
+    profileName: str
+    discountPercent: int
+    
 def snil(s: str):
     if s == "":
         return None
@@ -64,6 +69,16 @@ def insert_plate(Plate: PlateInsert):
         print(f"Error: {e}")
         return {"message": "Error inserting into LicensePlateTracker"}
         
+@router.post("/insertDiscount")
+def insert_plate(Discount: DiscountInsert):
+    try:
+        LicensePlates = supabase.table("DiscountProfiles") \
+            .insert({"discountID": Discount.discountID, "profileName": Discount.profileName, "discountPercent": Discount.discountPercent}) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error inserting into LicensePlates"}
+        
 @router.post("/remove")
 def insert_plate(Plate: PlateRemove):
     try:
@@ -88,6 +103,13 @@ def insert_plate(Plate: PlateRemove):
 def get_next_ID():
     existing = supabase.table("LicensePlateTracker") \
         .select("id") \
+        .execute()
+    return len(existing.data) + 1
+    
+@router.get("/nextAvailableDiscountID")
+def get_next_ID():
+    existing = supabase.table("DiscountProfiles") \
+        .select("discountID") \
         .execute()
     return len(existing.data) + 1
 
