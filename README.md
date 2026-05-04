@@ -62,7 +62,7 @@ Use any of the provided addresses to open the website in your browser (Note: the
 
 3: You must do this every time you try to run the fastAPI window. `source venv\Scripts\activate`. You should see `(venv)` at the beginning of your terminal line now. 
 
-4: While the VM is active, you’ll need the following dependencies IN THE VM. `pip install fastapi uvicorn supabase python-dotenv`
+4: While the VM is active, you’ll need the following dependencies IN THE VM. `pip install -r requirements.txt`
 
  
 
