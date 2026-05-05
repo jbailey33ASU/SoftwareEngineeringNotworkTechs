@@ -174,7 +174,7 @@ function Navbar() {
               </NavLink>
             </li>
           </ul>
-          <Button onClick={handleLogout} sx={{backgroundColor: 'white', color: 'black', justifyContent: "space-around"}}>Logout</Button>
+          <Button onClick={handleLogout} sx={{backgroundColor: 'white', color: 'black', justifyContent: "space-around", marginInline: '8px'}}>Logout</Button>
           <form className="d-flex" role="search">
             <input
               className="form-control me-2"
