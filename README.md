@@ -9,7 +9,7 @@ Hey y’all, I have done lots of research (and copying what some guy on youtube 
 ## 1: Overview 
 
 The smart guy at youtube.com setup the project this way, and it is what I did as well. It will be using React for the frontend. This is my weakest part so if anyone wants it, go nuts. 
-	FastAPI for the backend. Easy to setup python server on your machine. It’s a little annoying to setup but it works well from my experience. Even my shitty laptop can use it just fine. 
+	FastAPI for the backend. Easy to setup python server on your machine. It’s a little annoying to setup but it works well from my experience. Even my laptop can use it just fine. 
 
 Supabase for the SQL database. It uses PostgreSQL (Which I have learned has some small differences in formatting so be warned). I can invite all of yall to that as you need it. It’s also got a python library for ease of use which is very nice. 
 

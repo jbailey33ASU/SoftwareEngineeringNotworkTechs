@@ -20,6 +20,7 @@ export async function insertPlate(plateObject: object) {
 
   plateObject = Object.assign({"plateID": nextID}, plateObject);
   
+  
   fetch(`${API_URL}/vehicles/insert`, {
     method: "POST",
     body: JSON.stringify(plateObject),
@@ -30,6 +31,34 @@ export async function insertPlate(plateObject: object) {
   
 }
 
+export async function updatePlate(plateObject: object) {
+
+  const discounts = await fetch(`${API_URL}/vehicles/discounts`);
+
+  const discount = JSON.parse(await discounts.text());
+
+  discount.map((disc:any) => {
+    //console.log(disc.profileName);
+    //console.log(plateObject)
+    if (disc.profileName === (plateObject as any).discountID) {
+      (plateObject as any).discountID = disc.discountID;
+    }
+  });
+
+  //console.log(plateObject);
+
+  
+  fetch(`${API_URL}/vehicles/update`, {
+    method: "POST",
+    body: JSON.stringify(plateObject),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  });
+  
+  
+}
+
 export async function insertDiscount(discountObject: object) {
   const nextIDresponse = await fetch(`${API_URL}/vehicles/nextAvailableDiscountID`);
   const nextID = Number(await nextIDresponse.text());
@@ -37,6 +66,17 @@ export async function insertDiscount(discountObject: object) {
   discountObject = Object.assign({"discountID": nextID}, discountObject);
 
   fetch(`${API_URL}/vehicles/insertDiscount`, {
+    method: "POST",
+    body: JSON.stringify(discountObject),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  });
+}
+
+export async function updateDiscount(discountObject: object) {
+
+  fetch(`${API_URL}/vehicles/updateDiscount`, {
     method: "POST",
     body: JSON.stringify(discountObject),
     headers: {

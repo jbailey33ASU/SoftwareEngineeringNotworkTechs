@@ -28,12 +28,23 @@ class PlateInsert(BaseModel):
     discountEnd: str
     enterTime: str
     exitTime: str
+    
+class PlateUpdate(BaseModel):
+    licensePlate: str
+    discountID: int
+    discountStart: str
+    discountEnd: str
+    exitTime: str
 
 class PlateRemove(BaseModel):
     licensePlate: str
     
 class DiscountInsert(BaseModel):
     discountID: int
+    profileName: str
+    discountPercent: int
+
+class DiscountUpdate(BaseModel):
     profileName: str
     discountPercent: int
     
@@ -69,15 +80,56 @@ def insert_plate(Plate: PlateInsert):
         print(f"Error: {e}")
         return {"message": "Error inserting into LicensePlateTracker"}
         
+@router.post("/update")
+def insert_plate(Plate: PlateUpdate):
+    try:
+        LicensePlates = supabase.table("LicensePlates") \
+            .update({"licensePlate": Plate.licensePlate, "discountID": snul(Plate.discountID)}) \
+            .eq("licensePlate", Plate.licensePlate) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error Updating LicensePlates"}
+    
+    try:
+        p = supabase.table("LicensePlateTracker") \
+            .select("id", "enterTime") \
+            .eq("licensePlate", Plate.licensePlate) \
+            .execute();
+            
+        i = p.data[0]["id"]
+        ent = p.data[0]["enterTime"]
+        
+        LicensePlateTracker = supabase.table("LicensePlateTracker") \
+            .update({"id": i, "licensePlate": Plate.licensePlate, "discountID": snil(Plate.discountID), 
+                "discountStart": snil(Plate.discountStart), "discountEnd": snil(Plate.discountEnd),
+                "enterTime": snil(ent), "exitTime": snil(Plate.exitTime)}) \
+            .eq("licensePlate", Plate.licensePlate) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error inserting into LicensePlateTracker"}
+        
 @router.post("/insertDiscount")
-def insert_plate(Discount: DiscountInsert):
+def insert_discount(Discount: DiscountInsert):
     try:
         LicensePlates = supabase.table("DiscountProfiles") \
             .insert({"discountID": Discount.discountID, "profileName": Discount.profileName, "discountPercent": Discount.discountPercent}) \
             .execute()
     except Exception as e:
         print(f"Error: {e}")
-        return {"message": "Error inserting into LicensePlates"}
+        return {"message": "Error inserting into DiscountProfiles"}
+        
+@router.post("/updateDiscount")
+def insert_discount(Discount: DiscountUpdate):
+    try:
+        LicensePlates = supabase.table("DiscountProfiles") \
+            .update({"profileName": Discount.profileName, "discountPercent": Discount.discountPercent}) \
+            .eq("profileName", Discount.profileName) \
+            .execute()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"message": "Error updating DiscountProfiles"}
         
 @router.post("/remove")
 def insert_plate(Plate: PlateRemove):
