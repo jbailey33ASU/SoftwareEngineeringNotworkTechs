@@ -31,6 +31,8 @@ function Navbar() {
   const basicUserInfo = useAppSelector((state) => state.auth.basicUserInfo);
   const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
 
+  const [loggedIn, setLoggedIn] = useState<any>(null);
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -38,6 +40,12 @@ function Navbar() {
     const t = filterPlate();
     console.log(t); 
   }
+
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("userInfo");
+    setLoggedIn(loggedIn);
+  });
 
   const handleLogout = async () => {
       try {
@@ -174,7 +182,7 @@ function Navbar() {
               </NavLink>
             </li>
           </ul>
-          <Button onClick={handleLogout} sx={{backgroundColor: 'white', color: 'black', justifyContent: "space-around", marginInline: '8px'}}>Logout</Button>
+          {loggedIn ? <Button onClick={handleLogout} sx={{backgroundColor: 'white', color: 'black', justifyContent: "space-around", marginInline: '8px'}}>Logout</Button> : null}
           <form className="d-flex" role="search">
             <input
               className="form-control me-2"
