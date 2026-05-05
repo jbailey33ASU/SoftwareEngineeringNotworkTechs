@@ -85,6 +85,17 @@ export async function updateDiscount(discountObject: object) {
   });
 }
 
+export async function adjustPrice(newprice: number) {
+
+  fetch(`${API_URL}/vehicles/updatePrice`, {
+    method: "POST",
+    body: JSON.stringify({"configValue": newprice}),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  });
+}
+
 export async function deletePlate(licensePlate: string) {
 
   var plateObject = {"licensePlate": licensePlate}

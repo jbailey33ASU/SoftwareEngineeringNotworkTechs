@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { insertPlate, deletePlate, insertDiscount, getDiscounts, updatePlate, updateDiscount} from "../../api.tsx"
+import { insertPlate, deletePlate, insertDiscount, getDiscounts, updatePlate, updateDiscount, adjustPrice} from "../../api.tsx"
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -108,6 +108,12 @@ function Actions() {
         Discount.discountPercent = discountPercent;
 
         updateDiscount(Discount);
+    }
+
+    const submitPriceChange = () => {
+        const newprice = Number((document.getElementById("price") as HTMLInputElement).value);
+
+        adjustPrice(newprice);
     }
 
     const removePlate = () => {
@@ -265,6 +271,17 @@ function Actions() {
         />
         <Button variant="contained" onClick={submitDiscountUpdate} sx={{backgroundColor: 'black', color: 'white', marginTop: "8px", marginInline: "8px", fontSize: "12pt", height: "55px"}}>Update</Button>
       </div>    
+      <div style={{display: 'flex'}}>
+        <Typography sx={{marginTop: '16px', marginInline: '8px', minWidth: '150px'}} id="modal-modal-title" variant="h6" component="h2">Hourly Rate</Typography>
+        <TextField
+          required
+          id="price"
+          name="licensePlate"
+          label="New Price"
+          defaultValue=""
+        />
+        <Button variant="contained" onClick={submitPriceChange} sx={{backgroundColor: 'black', color: 'white', marginTop: "8px", marginInline: "8px", fontSize: "12pt", height: "55px"}}>Update</Button>
+        </div>
     </Box>
     </div>
   );

@@ -48,6 +48,9 @@ class DiscountUpdate(BaseModel):
     profileName: str
     discountPercent: int
     
+class PriceUpdate(BaseModel):
+    configValue: int
+    
 def snil(s: str):
     if s == "":
         return None
@@ -157,6 +160,17 @@ def get_next_ID():
         .select("id") \
         .execute()
     return len(existing.data) + 1
+    
+    
+
+@router.post("/updatePrice")
+def update_price(Price: PriceUpdate):
+    config = supabase.table("ParkingConfig") \
+        .update({"configValue": Price.configValue}) \
+        .eq("configKey", "hourly_rate") \
+        .execute()
+        
+        
     
 @router.get("/nextAvailableDiscountID")
 def get_next_ID():
