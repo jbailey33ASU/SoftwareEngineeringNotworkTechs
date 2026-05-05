@@ -57,7 +57,7 @@ function Permits() {
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.exitTime !== null ? moment(plate.exitTime).format("MMMM Do YYYY, h:mm:ss a") : noExit}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.DiscountProfiles.profileName}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.DiscountProfiles.discountPercent}</TableCell>
-                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{moment(plate.discountStart).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>
+                <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.discountStart !== null ? moment(plate.discountStart).format("MMMM Do YYYY, h:mm:ss a") : "No Start Specified"}</TableCell>
                 <TableCell sx={{backgroundColor: 'ghostwhite'}} align="right">{plate.discountEnd !== null ? moment(plate.discountEnd).format("MMMM Do YYYY, h:mm:ss a") : "No End Specified"}</TableCell>
               </TableRow>
           ))}
